@@ -15,6 +15,7 @@ import (
 
 	"github.com/iotexproject/iotex-core/action"
 	"github.com/iotexproject/iotex-core/action/protocol"
+	"github.com/iotexproject/iotex-core/actpool/actioniterator"
 	"github.com/iotexproject/iotex-core/blockchain"
 	"github.com/iotexproject/iotex-core/config"
 	"github.com/iotexproject/iotex-core/iotxaddress"
@@ -28,6 +29,8 @@ type ActPool interface {
 	Reset()
 	// PickActs returns all currently accepted actions in actpool
 	PickActs() []action.Action
+	// PendingActionIterator returns an action interator with all accepted actions
+	PendingActionIterator() actioniterator.ActionIterator
 	// Add adds an action into the pool after passing validation
 	Add(act action.Action) error
 	// GetPendingNonce returns pending nonce in pool given an account address
@@ -135,6 +138,18 @@ func (ap *actPool) PickActs() []action.Action {
 		}
 	}
 	return actions
+}
+
+// PendingActionIterator returns an action interator with all accepted actions
+func (ap *actPool) PendingActionIterator() actioniterator.ActionIterator {
+	ap.mutex.RLock()
+	defer ap.mutex.RUnlock()
+
+	actionMap := make(map[string][]action.Action, 0)
+	for from, queue := range ap.accountActs {
+		actionMap[from] = queue.PendingActs()
+	}
+	return actioniterator.NewActionIterator(actionMap)
 }
 
 func (ap *actPool) Add(act action.Action) error {

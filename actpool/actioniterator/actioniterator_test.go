@@ -1,4 +1,4 @@
-package actpool
+package actioniterator
 
 import (
 	"math/big"
@@ -30,12 +30,12 @@ func TestActionIterator(t *testing.T) {
 	accMap[tsf3.SrcAddr()] = []action.Action{tsf3}
 
 	ai := NewActionIterator(accMap)
-	act := ai.TopAction()
-	require.Equal(act, tsf1)
-	ai.LoadNextAction()
-	act = ai.TopAction()
-	require.Equal(act, vote1)
-	ai.PopAction()
-	act = ai.TopAction()
-	require.Equal(act, tsf2)
+	act := ai.Top()
+	require.Equal(*act, tsf1)
+	ai.LoadNext()
+	act = ai.Top()
+	require.Equal(*act, vote1)
+	ai.PopAccount()
+	act = ai.Top()
+	require.Equal(*act, tsf2)
 }

@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	action "github.com/iotexproject/iotex-core/action"
+	actioniterator "github.com/iotexproject/iotex-core/actpool/actioniterator"
 	blockchain "github.com/iotexproject/iotex-core/blockchain"
 	iotxaddress "github.com/iotexproject/iotex-core/iotxaddress"
 	hash "github.com/iotexproject/iotex-core/pkg/hash"
@@ -525,6 +526,19 @@ func (m *MockBlockchain) MintNewBlock(actions []action.Action, producer *iotxadd
 // MintNewBlock indicates an expected call of MintNewBlock
 func (mr *MockBlockchainMockRecorder) MintNewBlock(actions, producer, dkgAddress, seed, data interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintNewBlock", reflect.TypeOf((*MockBlockchain)(nil).MintNewBlock), actions, producer, dkgAddress, seed, data)
+}
+
+// MintNewBlockWithActionIterator mocks base method
+func (m *MockBlockchain) MintNewBlockWithActionIterator(actionIterator actioniterator.ActionIterator, producer *iotxaddress.Address, dkgAddress *iotxaddress.DKGAddress, seed []byte, data string) (*blockchain.Block, error) {
+	ret := m.ctrl.Call(m, "MintNewBlockWithActionIterator", actionIterator, producer, dkgAddress, seed, data)
+	ret0, _ := ret[0].(*blockchain.Block)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MintNewBlockWithActionIterator indicates an expected call of MintNewBlockWithActionIterator
+func (mr *MockBlockchainMockRecorder) MintNewBlockWithActionIterator(actionIterator, producer, dkgAddress, seed, data interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintNewBlockWithActionIterator", reflect.TypeOf((*MockBlockchain)(nil).MintNewBlockWithActionIterator), actionIterator, producer, dkgAddress, seed, data)
 }
 
 // MintNewSecretBlock mocks base method

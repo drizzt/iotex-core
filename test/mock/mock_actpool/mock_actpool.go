@@ -8,6 +8,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	action "github.com/iotexproject/iotex-core/action"
 	protocol "github.com/iotexproject/iotex-core/action/protocol"
+	actioniterator "github.com/iotexproject/iotex-core/actpool/actioniterator"
 	hash "github.com/iotexproject/iotex-core/pkg/hash"
 	reflect "reflect"
 )
@@ -55,6 +56,18 @@ func (m *MockActPool) PickActs() []action.Action {
 // PickActs indicates an expected call of PickActs
 func (mr *MockActPoolMockRecorder) PickActs() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PickActs", reflect.TypeOf((*MockActPool)(nil).PickActs))
+}
+
+// PendingActionIterator mocks base method
+func (m *MockActPool) PendingActionIterator() actioniterator.ActionIterator {
+	ret := m.ctrl.Call(m, "PendingActionIterator")
+	ret0, _ := ret[0].(actioniterator.ActionIterator)
+	return ret0
+}
+
+// PendingActionIterator indicates an expected call of PendingActionIterator
+func (mr *MockActPoolMockRecorder) PendingActionIterator() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingActionIterator", reflect.TypeOf((*MockActPool)(nil).PendingActionIterator))
 }
 
 // Add mocks base method

@@ -28,7 +28,7 @@ import (
 )
 
 // GasLimit is the total gas limit could be consumed in a block
-const GasLimit = uint64(1000000000)
+const GasLimit = uint64(100)
 
 // Payee defines the struct of payee
 type Payee struct {

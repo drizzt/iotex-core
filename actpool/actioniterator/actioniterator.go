@@ -4,7 +4,7 @@
 // permitted by law, all liability for your use of the code is disclaimed. This source code is governed by Apache
 // License 2.0 that can be found in the LICENSE file.
 
-package actpool
+package actioniterator
 
 import (
 	"container/heap"
@@ -37,9 +37,9 @@ func (s *ActionByPrice) Pop() interface{} {
 
 // ActionIterator define the interface of action iterator
 type ActionIterator interface {
-	TopAction() action.Action
-	PopAction()
-	LoadNextAction()
+	Top() *action.Action
+	PopAccount()
+	LoadNext()
 }
 
 type actionIterator struct {
@@ -63,21 +63,21 @@ func NewActionIterator(accountActs map[string][]action.Action) ActionIterator {
 	}
 }
 
-// TopAction return the top action(largest price) within the heap
-func (ai *actionIterator) TopAction() action.Action {
+// Top return the top action(largest price) within the heap
+func (ai *actionIterator) Top() *action.Action {
 	if len(ai.heads) == 0 {
 		return nil
 	}
-	return ai.heads[0]
+	return &ai.heads[0]
 }
 
-// PopAction pop top action
-func (ai *actionIterator) PopAction() {
+// Pop pop top action
+func (ai *actionIterator) PopAccount() {
 	heap.Pop(&ai.heads)
 }
 
-// LoadNextAction load next action of account of top action
-func (ai *actionIterator) LoadNextAction() {
+// LoadNext load next action of account of top action
+func (ai *actionIterator) LoadNext() {
 	sender := ai.heads[0].SrcAddr()
 	if actions, ok := ai.accountActs[sender]; ok && len(actions) > 0 {
 		ai.heads[0], ai.accountActs[sender] = actions[0], actions[1:]
