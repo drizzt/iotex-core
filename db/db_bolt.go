@@ -112,8 +112,10 @@ func (b *boltDB) Get(namespace string, key []byte) ([]byte, error) {
 	b.mutex.RLock()
 	defer b.mutex.RUnlock()
 
-	logger.Info().
-		Bool("dbExist", b.db != nil).Str("path", b.path).Msg("Get boltDB.")
+	if b.db == nil {
+		logger.Info().
+			Bool("dbExist", b.db != nil).Str("path", b.path).Msg("Get boltDB.")
+	}
 
 	var value []byte
 	err := b.db.View(func(tx *bolt.Tx) error {
