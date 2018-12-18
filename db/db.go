@@ -8,12 +8,14 @@ package db
 
 import (
 	"context"
+	"runtime/debug"
 	"sync"
 
 	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
 
 	"github.com/iotexproject/iotex-core/config"
+	"github.com/iotexproject/iotex-core/logger"
 	"github.com/iotexproject/iotex-core/pkg/lifecycle"
 )
 
@@ -144,6 +146,7 @@ func (m *memKVStore) Commit(b KVStoreBatch) (e error) {
 
 // NewOnDiskDB instantiates an on-disk KV store
 func NewOnDiskDB(cfg config.DB) KVStore {
+	logger.Info().Bytes("stack", debug.Stack()).Msg("New On disk db.")
 	if cfg.UseBadgerDB {
 		return &badgerDB{db: nil, path: cfg.DbPath, config: cfg}
 	}

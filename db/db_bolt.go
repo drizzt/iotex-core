@@ -33,6 +33,7 @@ func (b *boltDB) Start(_ context.Context) error {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
 
+	logger.Info().Bool("dbExist", b.db != nil).Bytes("stack", debug.Stack()).Msg("Start boltDB.")
 	if b.db != nil {
 		return nil
 	}
