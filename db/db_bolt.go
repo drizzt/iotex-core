@@ -8,12 +8,14 @@ package db
 
 import (
 	"context"
+	"runtime/debug"
 	"sync"
 
 	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
 
 	"github.com/iotexproject/iotex-core/config"
+	"github.com/iotexproject/iotex-core/logger"
 )
 
 const fileMode = 0600
@@ -49,6 +51,7 @@ func (b *boltDB) Stop(_ context.Context) error {
 	defer b.mutex.Unlock()
 
 	if b.db != nil {
+		logger.Error().Bytes("stack", debug.Stack()).Msg("Stop boltdb.")
 		err := b.db.Close()
 		b.db = nil
 		return err
