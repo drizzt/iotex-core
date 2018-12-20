@@ -98,25 +98,18 @@ func NewWorkingSet(
 // LoadOrCreateAccountState loads existing or adds a new account state with initial balance to the factory
 // addr should be a bech32 properly-encoded string
 func (ws *workingSet) LoadOrCreateAccountState(addr string, init *big.Int) (*Account, error) {
-	addrHash, err := iotxaddress.AddressToPKHash(addr)
+	account, err := ws.CachedAccountState(addr)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "failed to get account of %s from cached account", addr)
 	}
-	state, err := ws.CachedState(addrHash, &Account{})
-	switch {
-	case errors.Cause(err) == ErrStateNotExist:
-		account := Account{
-			Balance:      big.NewInt(0).Set(init),
+	if account == EmptyAccount {
+		account = &Account{
+			Balance:      init,
 			VotingWeight: big.NewInt(0),
 		}
-		ws.cachedStates[addrHash] = &account
-		return &account, nil
-	case err != nil:
-		return nil, errors.Wrapf(err, "failed to get account of %x from cached account", addrHash)
-	}
-	account, err := stateToAccountState(state)
-	if err != nil {
-		return nil, err
+		addrHash, _ := iotxaddress.AddressToPKHash(addr)
+		ws.cachedStates[addrHash] = account
+		return account, nil
 	}
 	return account, nil
 }
@@ -141,6 +134,9 @@ func (ws *workingSet) CachedAccountState(addr string) (*Account, error) {
 	}
 	state, err := ws.CachedState(addrHash, &Account{})
 	if err != nil {
+		if errors.Cause(err) == ErrStateNotExist {
+			return EmptyAccount, nil
+		}
 		return nil, err
 	}
 	account, err := stateToAccountState(state)

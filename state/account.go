@@ -15,6 +15,13 @@ import (
 	"github.com/iotexproject/iotex-core/proto"
 )
 
+// EmptyAccount indicates an empty account
+// This is a read-only variable for comparison purpose. Caller should not modify it.
+var EmptyAccount = &Account{
+	Balance:      big.NewInt(0),
+	VotingWeight: big.NewInt(0),
+}
+
 // Account is the canonical representation of an account.
 type Account struct {
 	// 0 is reserved from actions in genesis block and coinbase transfers nonces
