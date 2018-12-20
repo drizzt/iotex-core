@@ -1016,6 +1016,8 @@ func (bc *blockchain) commitBlock(blk *Block) error {
 		sfTimer := bc.timerFactory.NewTimer("sf.Commit")
 		err := bc.sf.Commit(blk.workingSet)
 		sfTimer.End()
+		// detach working set
+		blk.workingSet = nil
 		if err != nil {
 			return err
 		}
